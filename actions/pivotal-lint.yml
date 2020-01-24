@@ -1,0 +1,16 @@
+name: pivotal-lint
+
+on: [pull_request]
+
+jobs:
+  pivotal-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: pivotal-lint
+        uses: cleartax/pivotal-lint@v2.3.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pivotal-token: ${{ secrets.PIVOTAL_TOKEN }}
+          skip-branches: '^(master|epic\/.+)$'
+          skip-comments: true
+          pr-threshold: 1000
