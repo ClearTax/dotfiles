@@ -22,15 +22,26 @@ fi
 
 echo "🔧 Ensuring Aider is in PATH..."
 AIDER_PATH="$HOME/.local/bin/aider"
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-    export PATH="$HOME/.local/bin:$PATH"
+BASHRC_PATH="$HOME/.bashrc"
+
+if [ -f "$AIDER_PATH" ]; then
+    # Ensure PATH is correctly set
+    if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$BASHRC_PATH"
+        export PATH="$HOME/.local/bin:$PATH"
+    fi
+else
+    echo "❌ Aider installation failed. Exiting..."
+    exit 1
 fi
 
 echo "✅ Aider setup completed successfully!"
 
-# ✅ Auto-start Aider only in interactive shells
+# ✅ Apply changes immediately for current session
+source "$BASHRC_PATH"
+
+# ✅ Start Aider automatically in interactive sessions
 if [[ $- == *i* ]]; then
     echo "🚀 Launching Aider..."
-    aider
+    exec aider  # Replace shell with Aider
 fi
