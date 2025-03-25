@@ -1,32 +1,28 @@
 #!/bin/bash
+
 set -e  # Exit on error
 
-echo "🔄 Updating package list..."
-sudo apt update
+echo "🚀 Setting up Aider in Codespaces..."
 
-echo "📦 Installing Python3, Pip3, and Git..."
-sudo apt install -y python3 python3-pip git
+# Ensure ~/.local/bin exists
+mkdir -p "$HOME/.local/bin"
 
-echo "⚡ Verifying Pip3 installation..."
-if ! command -v pip3 &> /dev/null; then
-    echo "❌ Pip3 installation failed. Exiting..."
-    exit 1
-fi
-
-echo "🛠 Installing Aider..."
+# Install aider
+echo "🔧 Installing Aider..."
 pip3 install --user aider-chat
 
-echo "🔎 Locating Aider installation..."
-AIDER_PATH="$HOME/.local/bin/aider"
-
-if [ ! -f "$AIDER_PATH" ]; then
-    echo "❌ Aider installation failed. Exiting..."
-    exit 1
+# Ensure ~/.local/bin is in PATH
+if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' "$HOME/.bashrc"; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
 fi
 
-echo "🔧 Adding Aider to PATH..."
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc  # Apply changes immediately
+# Reload shell settings
+source "$HOME/.bashrc"
 
-echo "✅ Aider setup completed successfully!"
-echo "🔄 Restart your terminal if Aider is not recognized."
+# Verify installation
+if command -v aider &> /dev/null; then
+    echo "✅ Aider installed successfully!"
+else
+    echo "❌ Aider installation failed!"
+    exit 1
+fi
